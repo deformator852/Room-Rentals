@@ -3,12 +3,11 @@
 namespace App\Models;
 
 use App\Enums\UserRole;
-use Carbon\Carbon;
+use Carbon\CarbonImmutable;
 use Database\Factories\UserFactory;
 use Illuminate\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -16,22 +15,20 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 
 /**
- * @property int $id
+ * @property string $id
  * @property string $name
  * @property string $email
- * @property Carbon|null $email_verified_at
+ * @property CarbonImmutable|null $email_verified_at
  * @property string $password
+ * @property string|null $two_factor_secret
+ * @property string|null $two_factor_recovery_codes
+ * @property string|null $two_factor_confirmed_at
+ * @property string|null $remember_token
  * @property UserRole $role
  * @property string|null $avatar_url
- * @property bool $is_blocked
- * @property Carbon $created_at
- * @property Carbon $updated_at
- * @property-read Collection<Property>     $properties
- * @property-read Collection<Booking>      $bookings
- * @property-read Collection<Review>       $reviews
- * @property-read Collection<Notification> $notifications
- * @property-read Collection<Favorite>     $favorites
- * @property-read Collection<ModerationLog> $moderationLogs
+ * @property int $is_blocked
+ * @property CarbonImmutable|null $created_at
+ * @property CarbonImmutable|null $updated_at
  */
 #[Fillable([
     'email',
@@ -82,8 +79,6 @@ class User extends Authenticatable
     {
         return $this->role === UserRole::Tenant;
     }
-
-    // --- Relations ---
 
     public function properties(): HasMany
     {

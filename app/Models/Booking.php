@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use Carbon\Carbon;
+use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -14,16 +14,16 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property string $id
  * @property string $property_id
  * @property string $tenant_id
- * @property Carbon $check_in
- * @property Carbon $check_out
+ * @property CarbonImmutable $check_in
+ * @property CarbonImmutable $check_out
  * @property int $nights_count
- * @property string $total_price
- * @property string $status pending|confirmed|rejected|cancelled|completed
- * @property Carbon $created_at
- * @property Carbon $updated_at
- * @property-read Property      $property
- * @property-read User          $tenant
- * @property-read Review|null   $review
+ * @property numeric $total_price
+ * @property string $status
+ * @property CarbonImmutable|null $created_at
+ * @property CarbonImmutable|null $updated_at
+ * @property-read Property $property
+ * @property-read Review|null $review
+ * @property-read User $tenant
  */
 #[Fillable(['property_id',
     'tenant_id',
@@ -31,7 +31,8 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
     'check_out',
     'nights_count',
     'total_price',
-    'status', ])]
+    'status',])
+]
 class Booking extends Model
 {
     use HasFactory, HasUuids;

@@ -1,5 +1,9 @@
 <?php
 
-Route::view('/', 'welcome')->name('home');
+use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\HomeController;
+
+Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/register', [RegisterController::class, 'index'])->name('register.index');
 
 require __DIR__ . '/settings.php';

@@ -4,7 +4,7 @@ namespace App\Models;
 
 use App\Enums\PropertyStatus;
 use App\Enums\PropertyType;
-use Carbon\Carbon;
+use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -22,20 +22,25 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string $address
  * @property int $rooms_count
  * @property float $area
- * @property string $price_per_night
+ * @property numeric $price_per_night
  * @property int $min_nights
  * @property PropertyStatus $status
  * @property float $avg_rating
- * @property int $reviews_count
- * @property Carbon $created_at
- * @property Carbon $updated_at
- * @property-read User                                                    $owner
- * @property-read Collection<PropertyPhoto> $photos
- * @property-read Collection<PropertyPhoto> $mainPhoto
- * @property-read Collection<Booking>       $bookings
- * @property-read Collection<Review>        $reviews
- * @property-read Collection<Favorite>      $favorites
- * @property-read Collection<ModerationLog> $moderationLogs
+ * @property-read int|null $reviews_count
+ * @property CarbonImmutable|null $created_at
+ * @property CarbonImmutable|null $updated_at
+ * @property-read Collection<int, Booking> $bookings
+ * @property-read int|null $bookings_count
+ * @property-read Collection<int, Favorite> $favorites
+ * @property-read int|null $favorites_count
+ * @property-read Collection<int, PropertyPhoto> $mainPhoto
+ * @property-read int|null $main_photo_count
+ * @property-read Collection<int, ModerationLog> $moderationLogs
+ * @property-read int|null $moderation_logs_count
+ * @property-read User $owner
+ * @property-read Collection<int, PropertyPhoto> $photos
+ * @property-read int|null $photos_count
+ * @property-read Collection<int, Review> $reviews
  */
 class Property extends Model
 {
