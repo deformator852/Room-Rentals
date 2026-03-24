@@ -1,15 +1,12 @@
 <?php
 
-
 namespace App\Models;
 
 use Carbon\CarbonImmutable;
-use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-
 
 /**
  * @property string $id
@@ -25,16 +22,18 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property-read Property $property
  * @property-read User $tenant
  */
-#[Fillable(['booking_id',
-    'tenant_id',
-    'property_id',
-    'rating',
-    'comment',
-    'owner_reply',
-])]
 class Review extends Model
 {
     use HasFactory, HasUuids;
+
+    protected $fillable = [
+        'booking_id',
+        'tenant_id',
+        'property_id',
+        'rating',
+        'comment',
+        'owner_reply',
+    ];
 
     protected $casts = [
         'rating' => 'integer',

@@ -6,17 +6,17 @@ use App\Enums\UserRole;
 use Carbon\CarbonImmutable;
 use Database\Factories\UserFactory;
 use Illuminate\Auth\MustVerifyEmail;
-use Illuminate\Database\Eloquent\Attributes\Fillable;
-use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
+use Spatie\Permission\Traits\HasRoles;
 
 /**
  * @property string $id
- * @property string $name
+ * @property string $first_name
+ * @property string $last_name
  * @property string $email
  * @property CarbonImmutable|null $email_verified_at
  * @property string $password
@@ -30,32 +30,34 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
  * @property CarbonImmutable|null $created_at
  * @property CarbonImmutable|null $updated_at
  */
-#[Fillable([
-    'email',
-    'password',
-    'role',
-    'first_name',
-    'last_name',
-    'avatar_url',
-    'is_blocked',
-    'email_confirmed',
-    'email_confirmation_token',
-])]
-#[Hidden(['password', 'two_factor_secret', 'two_factor_recovery_codes', 'remember_token'])]
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, MustVerifyEmail,Notifiable,TwoFactorAuthenticatable;
+    use HasFactory, MustVerifyEmail, Notifiable, TwoFactorAuthenticatable;
 
     public $incrementing = false;
 
     protected $keyType = 'string';
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
+    protected $fillable = [
+        'email',
+        'password',
+        'role',
+        'first_name',
+        'last_name',
+        'avatar_url',
+        'is_blocked',
+        'email_confirmed',
+        'email_confirmation_token',
+    ];
+
+    protected $hidden = [
+        'password',
+        'two_factor_secret',
+        'two_factor_recovery_codes',
+        'remember_token',
+    ];
+
     protected function casts(): array
     {
         return [

@@ -19,7 +19,7 @@
     @livewireStyles
     @wireUiStyles
 </head>
-<body class="min-h-screen bg-white dark:bg-zinc-800">
+<body class="min-h-screen bg-zinc-950">
 <header container class="border-b border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
 </header>
 <main>

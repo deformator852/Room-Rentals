@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Carbon\CarbonImmutable;
-use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -20,15 +19,16 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property-read User $admin
  * @property-read Property $property
  */
-#[Fillable([
-    'admin_id',
-    'property_id',
-    'decision',
-    'comment',
-])]
 class ModerationLog extends Model
 {
     use HasFactory, HasUuids;
+
+    protected $fillable = [
+        'admin_id',
+        'property_id',
+        'decision',
+        'comment',
+    ];
 
     public function admin(): BelongsTo
     {

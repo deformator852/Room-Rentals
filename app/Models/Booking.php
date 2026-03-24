@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Carbon\CarbonImmutable;
-use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -25,18 +24,19 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property-read Review|null $review
  * @property-read User $tenant
  */
-#[Fillable(['property_id',
-    'tenant_id',
-    'check_in',
-    'check_out',
-    'nights_count',
-    'total_price',
-    'status',])
-]
 class Booking extends Model
 {
     use HasFactory, HasUuids;
 
+    protected $fillable = [
+        'property_id',
+        'tenant_id',
+        'check_in',
+        'check_out',
+        'nights_count',
+        'total_price',
+        'status',
+    ];
     protected $casts = [
         'check_in' => 'date',
         'check_out' => 'date',

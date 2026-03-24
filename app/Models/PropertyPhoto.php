@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Carbon\CarbonImmutable;
-use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -19,17 +18,16 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property CarbonImmutable|null $updated_at
  * @property-read Property $property
  */
-#[Fillable(
-    ['property_id',
-        'url',
-        'is_main',
-        'position',
-    ])
-]
 class PropertyPhoto extends Model
 {
     use HasFactory, HasUuids;
 
+    protected $fillable = [
+        'property_id',
+        'url',
+        'is_main',
+        'position',
+    ];
     protected $casts = [
         'is_main' => 'boolean',
     ];

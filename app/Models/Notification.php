@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Carbon\CarbonImmutable;
-use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -20,18 +19,17 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property CarbonImmutable|null $updated_at
  * @property-read User $user
  */
-#[Fillable(
-    ['user_id',
-        'event_type',
-        'message',
-        'metadata',
-        'is_read',
-    ]
-)]
 class Notification extends Model
 {
     use HasFactory, HasUuids;
 
+    protected $fillable = [
+        'user_id',
+        'event_type',
+        'message',
+        'metadata',
+        'is_read',
+    ];
     protected $casts = [
         'metadata' => 'array',
         'is_read' => 'boolean',
