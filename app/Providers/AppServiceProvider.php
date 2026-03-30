@@ -46,5 +46,6 @@ class AppServiceProvider extends ServiceProvider
                 ->uncompromised()
             : null,
         );
+
     }
 }

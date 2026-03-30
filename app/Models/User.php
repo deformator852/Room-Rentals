@@ -3,14 +3,14 @@
 namespace App\Models;
 
 use App\Enums\UserRole;
+use App\Notifications\QueuedVerifyEmail;
 use Carbon\CarbonImmutable;
-use Database\Factories\UserFactory;
-use Illuminate\Auth\MustVerifyEmail;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Laravel\Fortify\TwoFactorAuthenticatable;
 use Spatie\Permission\Traits\HasRoles;
 
 /**
@@ -20,20 +20,16 @@ use Spatie\Permission\Traits\HasRoles;
  * @property string $email
  * @property CarbonImmutable|null $email_verified_at
  * @property string $password
- * @property string|null $two_factor_secret
- * @property string|null $two_factor_recovery_codes
- * @property string|null $two_factor_confirmed_at
  * @property string|null $remember_token
- * @property UserRole $role
  * @property string|null $avatar_url
  * @property int $is_blocked
  * @property CarbonImmutable|null $created_at
  * @property CarbonImmutable|null $updated_at
  */
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, MustVerifyEmail, Notifiable, TwoFactorAuthenticatable;
+    use HasFactory, HasRoles, HasUuids, Notifiable;
 
     public $incrementing = false;
 
@@ -42,7 +38,6 @@ class User extends Authenticatable
     protected $fillable = [
         'email',
         'password',
-        'role',
         'first_name',
         'last_name',
         'avatar_url',
@@ -53,8 +48,6 @@ class User extends Authenticatable
 
     protected $hidden = [
         'password',
-        'two_factor_secret',
-        'two_factor_recovery_codes',
         'remember_token',
     ];
 
@@ -65,6 +58,11 @@ class User extends Authenticatable
             'password' => 'hashed',
             'role' => UserRole::class,
         ];
+    }
+
+    public function sendEmailVerificationNotification(): void
+    {
+        $this->notify(new QueuedVerifyEmail);
     }
 
     public function isAdmin(): bool

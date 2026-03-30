@@ -1,15 +1,11 @@
 <?php
 
-namespace App\Livewire;
+namespace App\Livewire\Login;
 
-use Livewire\Attributes\Layout;
 use Livewire\Component;
 
-#[Layout('layouts.auth')]
-class Register extends Component
+class Form extends Component
 {
-    public string $role = 'tenant';
-
     public string $first_name = '';
 
     public string $last_name = '';
@@ -21,7 +17,6 @@ class Register extends Component
     public string $password_confirmation = '';
 
     protected array $rules = [
-        'role' => 'required|in:tenant,landlord',
         'first_name' => 'required|string|max:255',
         'last_name' => 'required|string|max:255',
         'email' => 'required|email|unique:users,email',
@@ -29,16 +24,15 @@ class Register extends Component
         'password_confirmation' => 'required',
     ];
 
-    public function register(): void
+    public function login(): void
     {
-        $data = $this->validate();
-
+        $this->validate();
         session()->flash('status', 'Акаунт створено!');
-        $this->redirect(route('login.index'));
+        $this->redirect(route('login'));
     }
 
     public function render()
     {
-        return view('pages.auth.register');
+        return view('livewire.login.form');
     }
 }
