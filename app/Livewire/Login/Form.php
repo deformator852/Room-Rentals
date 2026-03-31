@@ -2,33 +2,35 @@
 
 namespace App\Livewire\Login;
 
+use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 
 class Form extends Component
 {
-    public string $first_name = '';
-
-    public string $last_name = '';
-
     public string $email = '';
 
     public string $password = '';
 
-    public string $password_confirmation = '';
+    public bool $remember = false;
 
     protected array $rules = [
-        'first_name' => 'required|string|max:255',
-        'last_name' => 'required|string|max:255',
-        'email' => 'required|email|unique:users,email',
-        'password' => 'required|min:8|confirmed',
-        'password_confirmation' => 'required',
+        'email' => 'required|email',
+        'password' => 'required',
     ];
 
     public function login(): void
     {
         $this->validate();
-        session()->flash('status', 'Акаунт створено!');
-        $this->redirect(route('login'));
+
+        if (! Auth::attempt(['email' => $this->email, 'password' => $this->password], $this->remember)) {
+            $this->addError('email', 'Невірний email або пароль.');
+
+            return;
+        }
+
+        session()->regenerate();
+
+        $this->redirect(route('home'));
     }
 
     public function render()
