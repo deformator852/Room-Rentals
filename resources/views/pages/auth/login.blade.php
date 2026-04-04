@@ -23,7 +23,11 @@
                     {{ session('status') }}
                 </div>
             @endif
-
+            @if (session('error'))
+                <div class="mb-4 p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-sm text-red-400 text-center">
+                    {{ session('error') }}
+                </div>
+            @endif
             <livewire:login.form />
 
         </div>

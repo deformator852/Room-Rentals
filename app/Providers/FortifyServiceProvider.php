@@ -46,10 +46,7 @@ class FortifyServiceProvider extends ServiceProvider
     private function configureViews(): void
     {
         Fortify::loginView(fn () => view('pages.auth.login'));
-        Fortify::verifyEmailView(fn () => view('pages.auth.verify-email'));
-        Fortify::confirmPasswordView(fn () => view('pages::auth.confirm-password'));
-        Fortify::resetPasswordView(fn () => view('pages::auth.reset-password'));
-        Fortify::requestPasswordResetLinkView(fn () => view('pages::auth.forgot-password'));
+        Fortify::verifyEmailView(fn () => redirect(route('login'))->with('error', 'Please verify your email address before logging in.'));
     }
 
     /**
