@@ -70,14 +70,9 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->role === UserRole::Admin;
     }
 
-    public function isLandlord(): bool
+    public function isClient(): bool
     {
-        return $this->role === UserRole::Landlord;
-    }
-
-    public function isTenant(): bool
-    {
-        return $this->role === UserRole::Tenant;
+        return $this->role === UserRole::Client;
     }
 
     public function properties(): HasMany

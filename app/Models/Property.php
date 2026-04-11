@@ -70,8 +70,6 @@ class Property extends Model
         'area' => 'float',
     ];
 
-    // --- Status helpers ---
-
     public function isPublished(): bool
     {
         return $this->status === PropertyStatus::Published;
@@ -81,8 +79,6 @@ class Property extends Model
     {
         return $this->status === PropertyStatus::Pending;
     }
-
-    // --- Relations ---
 
     public function owner(): BelongsTo
     {

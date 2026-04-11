@@ -30,7 +30,7 @@ class CreateNewUser implements CreatesNewUsers
             'email' => $input['email'],
             'password' => $input['password'],
         ]);
-        $user->assignRole('tenant', 'landlord');
+        $user->assignRole('client');
 
         return $user;
     }

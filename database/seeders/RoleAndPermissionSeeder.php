@@ -11,7 +11,7 @@ class RoleAndPermissionSeeder extends Seeder
     public function run()
     {
         $rolesPermissions = [
-            'user' => [
+            'client' => [
                 'create.ad',
                 'update.ad',
                 'delete.ad',

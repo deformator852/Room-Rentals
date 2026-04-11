@@ -34,6 +34,15 @@ class Create extends Component
     /** @var TemporaryUploadedFile[] */
     public array $photos = [];
 
+    public function updatedPhotos(): void
+    {
+        if (count($this->photos) > 7) {
+            $this->photos = array_slice($this->photos, 0, 7);
+        }
+
+        $this->validateOnly('photos');
+    }
+
     public function removePhoto(int $index): void
     {
         array_splice($this->photos, $index, 1);
@@ -51,7 +60,7 @@ class Create extends Component
             'area' => ['required', 'numeric', 'min:1'],
             'price_per_night' => ['required', 'numeric', 'min:0'],
             'min_nights' => ['required', 'integer', 'min:1'],
-            'photos' => ['nullable', 'array', 'max:10'],
+            'photos' => ['nullable', 'array', 'max:7'],
             'photos.*' => ['image', 'max:5120'],
         ];
     }
@@ -60,22 +69,22 @@ class Create extends Component
     {
         $this->validate([
             'title' => ['required', 'string', 'min:5', 'max:100'],
+            'property_type' => ['required', 'string'],
         ]);
 
         $this->storeProperty(PropertyStatus::Draft);
 
         session()->flash('status', 'Чернетку збережено.');
-        $this->redirect(route('properties.index'));
+        $this->redirect(route('home'));
     }
 
     public function publish(): void
     {
         $this->validate();
-
         $this->storeProperty(PropertyStatus::Pending);
 
         session()->flash('status', 'Оголошення відправлено на модерацію.');
-        $this->redirect(route('properties.index'));
+        $this->redirect(route('home'));
     }
 
     private function storeProperty(PropertyStatus $status): void
@@ -94,9 +103,11 @@ class Create extends Component
         ]);
 
         foreach ($this->photos as $i => $photo) {
-            $path = $photo->store('properties', 'public');
+            $filename = time().'_'.$i.'_'.uniqid().'.'.$photo->extension();
+            $path = $photo->storeAs('properties', $filename, 'public');
+
             $property->photos()->create([
-                'path' => $path,
+                'url' => $path,
                 'is_main' => $i === 0,
             ]);
         }
@@ -104,6 +115,10 @@ class Create extends Component
 
     public function render()
     {
-        return view('livewire.property.create');
+        $propertyTypes = PropertyType::options();
+
+        return view('livewire.property.create', [
+            'propertyTypes' => $propertyTypes,
+        ]);
     }
 }
