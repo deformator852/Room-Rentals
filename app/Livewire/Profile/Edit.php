@@ -26,7 +26,7 @@ class Edit extends Component
         return [
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,'.Auth::id(),
+            'email' => 'required|email|unique:users,email,' . Auth::id(),
             'avatar' => 'nullable|image|max:2048',
         ];
     }
@@ -45,7 +45,7 @@ class Edit extends Component
         $this->emailChanged = $this->email !== Auth::user()->email;
     }
 
-    public function save(): void
+    public function save()
     {
         $this->validate();
 
@@ -68,8 +68,8 @@ class Edit extends Component
         $user->last_name = $this->last_name;
         $user->email = $this->email;
         $user->save();
-
-        session()->flash('status', 'Профіль оновлено!');
+        return $this->redirect(request()->header('Referer'), navigate: true);
+        //        session()->flash('status', 'Профіль оновлено!');
     }
 
     public function render()

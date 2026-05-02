@@ -12,13 +12,13 @@ class RoleAndPermissionSeeder extends Seeder
     {
         $rolesPermissions = [
             'client' => [
-                'create.ad',
-                'update.ad',
-                'delete.ad',
-                'view.ad',
+                'create.property',
+                'update.propetry',
+                'delete.property',
+                'view.propetry',
             ],
             'admin' => [
-                'moderate.ad',
+                'moderate.propetry',
             ],
         ];
 
