@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Property;
 use Illuminate\Http\Request;
 
 class PropertyController extends Controller
@@ -9,6 +10,11 @@ class PropertyController extends Controller
     public function index()
     {
         //
+    }
+
+    public function myProperties()
+    {
+        return view('pages.property.my-properties');
     }
 
     public function create()
@@ -26,9 +32,13 @@ class PropertyController extends Controller
         //
     }
 
-    public function edit(string $id)
+    public function edit(Property $property)
     {
-        //
+        abort_unless($property->user_id === auth()->id(), 403);
+
+        return view('pages.property.edit', [
+            'property' => $property,
+        ]);
     }
 
     public function update(Request $request, string $id)

@@ -14,4 +14,8 @@ Route::get('/login', [LoginController::class, 'index'])->name('login');
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
     Route::get('/create-property', [PropertyController::class, 'create'])->name('property.create');
+    Route::get('/edit-property/{property}', [PropertyController::class, 'edit'])
+        ->name('property.edit');
+    Route::get('/my-properties', [PropertyController::class, 'myProperties'])
+        ->name('profile.my-properties');
 });

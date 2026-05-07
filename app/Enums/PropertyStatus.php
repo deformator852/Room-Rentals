@@ -10,6 +10,7 @@ enum PropertyStatus: string
     case Rejected = 'rejected';
     case Inactive = 'inactive';
 
+
     public function label(): string
     {
         return match ($this) {
@@ -18,6 +19,17 @@ enum PropertyStatus: string
             self::Published => 'Опубліковано',
             self::Rejected => 'Відхилено',
             self::Inactive => 'Неактивне',
+        };
+    }
+
+    public function color(): string
+    {
+        return match ($this) {
+            self::Draft => 'gray',
+            self::Pending => 'warning',
+            self::Published => 'success',
+            self::Rejected => 'danger',
+            self::Inactive => 'secondary',
         };
     }
 

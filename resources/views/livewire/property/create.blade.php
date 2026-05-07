@@ -18,7 +18,7 @@
                 @foreach ($propertyTypes as $value => $data)
                     <label class="cursor-pointer">
                         <input type="radio" wire:model="property_type" value="{{ $value }}"
-                            class="peer sr-only" />
+                               class="peer sr-only"/>
                         <div
                             class="flex flex-col items-center gap-1.5 rounded-lg border border-zinc-200 bg-white px-2 py-3 text-center transition-all
                                     hover:border-blue-400 hover:bg-blue-50
@@ -34,26 +34,26 @@
                 @endforeach
             </div>
             @error('property_type')
-                <p class="mt-1.5 text-xs text-red-500">{{ $message }}</p>
+            <p class="mt-1.5 text-xs text-red-500">{{ $message }}</p>
             @enderror
         </div>
 
         <div class="border-t border-zinc-100 dark:border-zinc-800"></div>
 
-        <div>
+        <div wire:ignore>
             <p class="mb-3 text-xs font-semibold uppercase tracking-widest text-zinc-400">Фотографії</p>
 
             <div id="photo-upload-zone"
-                class="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-zinc-200 bg-white px-6 py-8 transition-all hover:border-blue-400 hover:bg-blue-50 dark:border-zinc-700 dark:bg-zinc-800/40 dark:hover:border-blue-500 dark:hover:bg-blue-950/20 {{ count($photos) >= 7 ? 'opacity-50 cursor-not-allowed' : '' }}">
+                 class="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-zinc-200 bg-white px-6 py-8 transition-all hover:border-blue-400 hover:bg-blue-50 dark:border-zinc-700 dark:bg-zinc-800/40 dark:hover:border-blue-500 dark:hover:bg-blue-950/20 {{ count($photos) >= 7 ? 'opacity-50 cursor-not-allowed' : '' }}">
 
                 <input type="file" id="photo-input" class="hidden" accept="image/jpeg,image/png,image/webp"
-                    multiple />
+                       multiple/>
 
                 <div
                     class="flex h-10 w-10 items-center justify-center rounded-full bg-zinc-100 text-zinc-400 dark:bg-zinc-700">
                     <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5l4.5-4.5 4.5 4.5 4.5-6 4.5 6" />
-                        <rect x="3" y="3" width="18" height="18" rx="3" stroke-linecap="round" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5l4.5-4.5 4.5 4.5 4.5-6 4.5 6"/>
+                        <rect x="3" y="3" width="18" height="18" rx="3" stroke-linecap="round"/>
                     </svg>
                 </div>
 
@@ -72,13 +72,13 @@
                 <div id="previews-container" class="flex flex-wrap gap-4"></div>
             </div>
 
-            @error('photos')
-                <p class="mt-2 text-xs text-red-500">{{ $message }}</p>
-            @enderror
-            @error('photos.*')
-                <p class="mt-2 text-xs text-red-500">{{ $message }}</p>
-            @enderror
         </div>
+        @error('photos')
+        <p class="mt-2 text-xs text-red-500">{{ $message }}</p>
+        @enderror
+        @error('photos.*')
+        <p class="mt-2 text-xs text-red-500">{{ $message }}</p>
+        @enderror
         <div class="border-t border-zinc-100 dark:border-zinc-800"></div>
 
         <div>
@@ -88,20 +88,20 @@
                 <div>
                     <label class="mb-1.5 block text-sm font-medium text-zinc-700 dark:text-zinc-300">Заголовок</label>
                     <input wire:model="title" type="text" maxlength="100"
-                        placeholder="Наприклад: Затишна квартира в центрі Києва"
-                        class="w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 placeholder-zinc-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white dark:placeholder-zinc-500" />
+                           placeholder="Наприклад: Затишна квартира в центрі Києва"
+                           class="w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 placeholder-zinc-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white dark:placeholder-zinc-500"/>
                     @error('title')
-                        <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
+                    <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
                     @enderror
                 </div>
 
                 <div>
                     <label class="mb-1.5 block text-sm font-medium text-zinc-700 dark:text-zinc-300">Опис</label>
                     <textarea wire:model="description" rows="4" maxlength="2000"
-                        placeholder="Розкажіть про особливості житла, зручності, розташування..."
-                        class="w-full resize-y rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 placeholder-zinc-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white dark:placeholder-zinc-500"></textarea>
+                              placeholder="Розкажіть про особливості житла, зручності, розташування..."
+                              class="w-full resize-y rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 placeholder-zinc-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white dark:placeholder-zinc-500"></textarea>
                     @error('description')
-                        <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
+                    <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
                     @enderror
                 </div>
 
@@ -117,18 +117,18 @@
                 <div>
                     <label class="mb-1.5 block text-sm font-medium text-zinc-700 dark:text-zinc-300">Місто</label>
                     <input wire:model="city" type="text" placeholder="Київ"
-                        class="w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 placeholder-zinc-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white dark:placeholder-zinc-500" />
+                           class="w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 placeholder-zinc-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white dark:placeholder-zinc-500"/>
                     @error('city')
-                        <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
+                    <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
                     @enderror
                 </div>
 
                 <div>
                     <label class="mb-1.5 block text-sm font-medium text-zinc-700 dark:text-zinc-300">Адреса</label>
                     <input wire:model="address" type="text" placeholder="Вул. Хрещатик, 1"
-                        class="w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 placeholder-zinc-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white dark:placeholder-zinc-500" />
+                           class="w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 placeholder-zinc-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white dark:placeholder-zinc-500"/>
                     @error('address')
-                        <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
+                    <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
                     @enderror
                 </div>
 
@@ -144,14 +144,14 @@
                 <div>
                     <label class="mb-1.5 block text-sm font-medium text-zinc-700 dark:text-zinc-300">Кімнат</label>
                     <select wire:model="rooms_count"
-                        class="w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white">
+                            class="w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white">
                         <option value="">—</option>
                         @foreach (range(1, 10) as $n)
                             <option value="{{ $n }}">{{ $n }}</option>
                         @endforeach
                     </select>
                     @error('rooms_count')
-                        <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
+                    <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
                     @enderror
                 </div>
 
@@ -160,12 +160,12 @@
                     <div
                         class="flex overflow-hidden rounded-lg border border-zinc-200 bg-white focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500 dark:border-zinc-700 dark:bg-zinc-800">
                         <input wire:model="area" type="number" min="1" placeholder="50"
-                            class="w-full bg-transparent px-3 py-2 text-sm text-zinc-900 placeholder-zinc-400 outline-none dark:text-white dark:placeholder-zinc-500" />
+                               class="w-full bg-transparent px-3 py-2 text-sm text-zinc-900 placeholder-zinc-400 outline-none dark:text-white dark:placeholder-zinc-500"/>
                         <span
                             class="flex items-center border-l border-zinc-200 bg-zinc-50 px-3 text-xs font-medium text-zinc-400 dark:border-zinc-700 dark:bg-zinc-700/50">м²</span>
                     </div>
                     @error('area')
-                        <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
+                    <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
                     @enderror
                 </div>
 
@@ -176,19 +176,19 @@
                         <span
                             class="flex items-center border-r border-zinc-200 bg-zinc-50 px-3 text-xs font-medium text-zinc-400 dark:border-zinc-700 dark:bg-zinc-700/50">₴</span>
                         <input wire:model="price_per_night" type="number" min="0" placeholder="800"
-                            class="w-full bg-transparent px-3 py-2 text-sm text-zinc-900 placeholder-zinc-400 outline-none dark:text-white dark:placeholder-zinc-500" />
+                               class="w-full bg-transparent px-3 py-2 text-sm text-zinc-900 placeholder-zinc-400 outline-none dark:text-white dark:placeholder-zinc-500"/>
                     </div>
                     @error('price_per_night')
-                        <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
+                    <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
                     @enderror
                 </div>
 
                 <div>
                     <label class="mb-1.5 block text-sm font-medium text-zinc-700 dark:text-zinc-300">Мін. ночей</label>
                     <input wire:model="min_nights" type="number" min="1"
-                        class="w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 placeholder-zinc-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white dark:placeholder-zinc-500" />
+                           class="w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 placeholder-zinc-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white dark:placeholder-zinc-500"/>
                     @error('min_nights')
-                        <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
+                    <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
                     @enderror
                 </div>
 
@@ -204,13 +204,13 @@
 
         <div class="flex justify-end gap-3">
             <button wire:click="saveDraft" wire:loading.attr="disabled" type="button"
-                class="rounded-lg border border-zinc-200 bg-white px-5 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50 disabled:opacity-60 transition-colors dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200 dark:hover:bg-zinc-700">
+                    class="rounded-lg border border-zinc-200 bg-white px-5 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50 disabled:opacity-60 transition-colors dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200 dark:hover:bg-zinc-700">
                 <span wire:loading.remove wire:target="saveDraft">Зберегти чернетку</span>
                 <span wire:loading wire:target="saveDraft">Збереження...</span>
             </button>
 
             <button wire:click="publish" wire:loading.attr="disabled" type="button"
-                class="rounded-lg bg-blue-600 px-6 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-60 transition-colors">
+                    class="rounded-lg bg-blue-600 px-6 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-60 transition-colors">
                 <span wire:loading.remove wire:target="publish">Опублікувати</span>
                 <span wire:loading wire:target="publish">Публікуємо...</span>
             </button>
@@ -220,7 +220,7 @@
 </div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         const zone = document.getElementById('photo-upload-zone');
         let input = document.getElementById('photo-input');
         let selectedFiles = [];
@@ -242,7 +242,7 @@
             div.className = 'relative group';
             div.innerHTML = `
             <img src="${URL.createObjectURL(file)}" class="h-28 w-28 rounded-xl object-cover ring-2 ring-zinc-200 dark:ring-zinc-700" />
-            <button type="button" data-index="${index}" 
+            <button type="button" data-index="${index}"
                     class="absolute -top-2 -right-2 h-7 w-7 flex items-center justify-center bg-red-500 hover:bg-red-600 text-white rounded-full text-xl leading-none shadow-md opacity-0 group-hover:opacity-100 transition">
                 ×
             </button>
@@ -260,7 +260,7 @@
 
             // Remove buttons
             previewsContainer.querySelectorAll('button').forEach(btn => {
-                btn.addEventListener('click', function() {
+                btn.addEventListener('click', function () {
                     const idx = parseInt(this.getAttribute('data-index'));
                     URL.revokeObjectURL(URL.createObjectURL(selectedFiles[idx])); // cleanup
                     selectedFiles.splice(idx, 1);
@@ -347,7 +347,7 @@
 
         document.querySelectorAll('button[wire\\:click="publish"], button[wire\\:click="saveDraft"]').forEach(
             btn => {
-                btn.addEventListener('click', function(e) {
+                btn.addEventListener('click', function (e) {
                     if (btn.hasAttribute('wire:loading')) return;
 
                     e.preventDefault();

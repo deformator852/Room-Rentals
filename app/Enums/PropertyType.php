@@ -11,6 +11,18 @@ enum PropertyType: string
     case Studio = 'studio';
     case Other = 'other';
 
+    public function color(): string
+    {
+        return match ($this) {
+            self::Apartment => 'info',
+            self::House => 'success',
+            self::Room => 'warning',
+            self::Cottage => 'success',
+            self::Studio => 'primary',
+            self::Other => 'gray',
+        };
+    }
+    
     public function label(): string
     {
         return match ($this) {

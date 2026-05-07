@@ -103,7 +103,7 @@ class Create extends Component
         ]);
 
         foreach ($this->photos as $i => $photo) {
-            $filename = time().'_'.$i.'_'.uniqid().'.'.$photo->extension();
+            $filename = time() . '_' . $i . '_' . uniqid() . '.' . $photo->extension();
             $path = $photo->storeAs('properties', $filename, 'public');
 
             $property->photos()->create([
@@ -120,5 +120,49 @@ class Create extends Component
         return view('livewire.property.create', [
             'propertyTypes' => $propertyTypes,
         ]);
+    }
+
+    protected function messages(): array
+    {
+        return [
+            'title.required' => 'Введіть назву оголошення.',
+            'title.min' => 'Назва має містити щонайменше 5 символів.',
+            'title.max' => 'Назва не може бути довшою за 100 символів.',
+
+            'description.required' => 'Введіть опис оголошення.',
+            'description.min' => 'Опис має містити щонайменше 20 символів.',
+            'description.max' => 'Опис не може бути довшим за 2000 символів.',
+
+            'property_type.required' => 'Оберіть тип нерухомості.',
+
+            'city.required' => 'Введіть місто.',
+            'city.max' => 'Назва міста не може бути довшою за 100 символів.',
+
+            'address.required' => 'Введіть адресу.',
+            'address.max' => 'Адреса не може бути довшою за 255 символів.',
+
+            'rooms_count.required' => 'Вкажіть кількість кімнат.',
+            'rooms_count.integer' => 'Кількість кімнат має бути цілим числом.',
+            'rooms_count.min' => 'Кількість кімнат має бути не менше 1.',
+            'rooms_count.max' => 'Кількість кімнат не може бути більше 20.',
+
+            'area.required' => 'Вкажіть площу.',
+            'area.numeric' => 'Площа має бути числом.',
+            'area.min' => 'Площа має бути більшою за 0.',
+
+            'price_per_night.required' => 'Вкажіть ціну за ніч.',
+            'price_per_night.numeric' => 'Ціна має бути числом.',
+            'price_per_night.min' => 'Ціна не може бути від’ємною.',
+
+            'min_nights.required' => 'Вкажіть мінімальну кількість ночей.',
+            'min_nights.integer' => 'Кількість ночей має бути цілим числом.',
+            'min_nights.min' => 'Мінімальна кількість ночей має бути не менше 1.',
+
+            'photos.array' => 'Фото мають бути передані списком.',
+            'photos.max' => 'Можна завантажити не більше 7 фото.',
+
+            'photos.*.image' => 'Кожен файл має бути зображенням.',
+            'photos.*.max' => 'Розмір кожного фото не має перевищувати 5 МБ.',
+        ];
     }
 }

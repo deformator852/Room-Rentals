@@ -15,27 +15,44 @@ class PropertyForm
         return $schema
             ->components([
                 TextInput::make('title')
+                    ->label('Назва')
                     ->required(),
+
                 Textarea::make('description')
+                    ->label('Опис')
                     ->required()
                     ->columnSpanFull(),
+
                 Select::make('property_type')
+                    ->label('Тип нерухомості')
                     ->options(PropertyType::class)
                     ->required(),
+
                 TextInput::make('city')
+                    ->label('Місто')
                     ->required(),
+
                 TextInput::make('address')
+                    ->label('Адреса')
                     ->required(),
+
                 TextInput::make('rooms_count')
+                    ->label('Кількість кімнат')
                     ->required()
                     ->numeric(),
+
                 TextInput::make('area')
+                    ->label('Площа (м²)')
                     ->required()
                     ->numeric(),
+
                 TextInput::make('price_per_night')
+                    ->label('Ціна за ніч')
                     ->required()
                     ->numeric(),
+
                 TextInput::make('min_nights')
+                    ->label('Мінімальна кількість ночей')
                     ->required()
                     ->numeric()
                     ->default(1),

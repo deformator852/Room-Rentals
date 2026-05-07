@@ -8,6 +8,7 @@ use Filament\Actions\Action;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\Textarea;
 use Filament\Resources\Pages\ViewRecord;
+use Illuminate\Support\Facades\DB;
 
 class ViewProperty extends ViewRecord
 {
@@ -17,6 +18,27 @@ class ViewProperty extends ViewRecord
     {
         return [
             EditAction::make(),
+            Action::make('approve')
+                ->label('Дозволити публікацію')
+                ->color('success')
+                ->icon('heroicon-o-check-circle')
+                ->visible(fn () => $this->record->isPending())
+                ->requiresConfirmation()
+                ->modalHeading('Опублікувати оголошення')
+                ->modalDescription('Ви впевнені, що хочете дозволити публікацію цього оголошення?')
+                ->action(function () {
+                    DB::transaction(function () {
+                        $this->record->update([
+                            'status' => PropertyStatus::Published,
+                        ]);
+
+                        $this->record->moderationLogs()->create([
+                            'admin_id' => auth()->id(),
+                            'reason' => null,
+                            'action' => 'approved',
+                        ]);
+                    });
+                }),
             Action::make('reject')
                 ->label('Відмовити у публікації')
                 ->color('danger')
@@ -31,15 +53,17 @@ class ViewProperty extends ViewRecord
                         ->required(),
                 ])
                 ->action(function (array $data) {
-                    $this->record->update([
-                        'status' => PropertyStatus::Rejected,
-                    ]);
+                    DB::transaction(function () use ($data) {
+                        $this->record->update([
+                            'status' => PropertyStatus::Rejected,
+                        ]);
 
-                    $this->record->moderationLogs()->create([
-                        'user_id' => auth()->id(),
-                        'reason' => $data['reason'],
-                        'action' => 'rejected',
-                    ]);
+                        $this->record->moderationLogs()->create([
+                            'admin_id' => auth()->id(),
+                            'reason' => $data['reason'],
+                            'action' => 'rejected',
+                        ]);
+                    });
 
                     //                    Notification::make()
                     //                        ->title('Оголошення відхилено')

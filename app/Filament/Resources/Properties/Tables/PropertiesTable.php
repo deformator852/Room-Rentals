@@ -16,24 +16,43 @@ class PropertiesTable
         return $table
             ->columns([
                 TextColumn::make('title')
+                    ->label('Назва')
                     ->searchable(),
+
                 TextColumn::make('property_type')
-                    ->badge(),
+                    ->label('Тип нерухомості')
+                    ->badge()
+                    ->formatStateUsing(fn($state) => $state?->label())
+                    ->color(fn($state) => $state?->color()),
+
                 TextColumn::make('city')
+                    ->label('Місто')
                     ->searchable(),
+
                 TextColumn::make('status')
-                    ->badge(),
+                    ->label('Статус')
+                    ->badge()
+                    ->formatStateUsing(fn($state) => $state?->label())
+                    ->color(fn($state) => $state?->color()),
+
                 TextColumn::make('avg_rating')
+                    ->label('Середній рейтинг')
                     ->numeric()
                     ->sortable(),
+
                 TextColumn::make('reviews_count')
+                    ->label('Кількість відгуків')
                     ->numeric()
                     ->sortable(),
+
                 TextColumn::make('created_at')
+                    ->label('Створено')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
+
                 TextColumn::make('updated_at')
+                    ->label('Оновлено')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -42,12 +61,17 @@ class PropertiesTable
                 //
             ])
             ->recordActions([
-                ViewAction::make(),
-                EditAction::make(),
+                ViewAction::make()
+                    ->label('Перегляд'),
+
+                EditAction::make()
+                    ->label('Редагувати'),
+
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make(),
+                    DeleteBulkAction::make()
+                        ->label('Видалити'),
                 ]),
             ]);
     }
