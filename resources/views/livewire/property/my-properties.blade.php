@@ -35,6 +35,11 @@
 
                 @php
                     $mainPhoto = $property->mainPhoto->first();
+                    $mainPhotoUrl = $mainPhoto
+                        ? (\Illuminate\Support\Str::startsWith($mainPhoto->url, ['http://', 'https://'])
+                            ? $mainPhoto->url
+                            : Storage::url($mainPhoto->url))
+                        : null;
                 @endphp
 
                 <div
@@ -42,10 +47,10 @@
 
                     <div class="aspect-[4/3] overflow-hidden bg-zinc-100 dark:bg-zinc-800">
 
-                        @if($mainPhoto)
+                        @if($mainPhotoUrl)
 
                             <img
-                                src="{{ Storage::url($mainPhoto->url) }}"
+                                src="{{ $mainPhotoUrl }}"
                                 alt="{{ $property->title }}"
                                 class="h-full w-full object-cover"
                             >
@@ -90,7 +95,7 @@
                         </h2>
 
                         <p class="mt-1 line-clamp-1 text-sm text-zinc-500 dark:text-zinc-400">
-                            {{ $property->city }}
+                            {{ $property->settlement?->name ?? '—' }}@if($property->settlement?->region), {{ $property->settlement->region }}@endif
                         </p>
 
                         <div class="mt-3 flex items-center gap-3 text-sm text-zinc-500 dark:text-zinc-400">

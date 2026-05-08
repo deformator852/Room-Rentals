@@ -18,7 +18,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string $title
  * @property string $description
  * @property PropertyType $property_type
- * @property string $city
+ * @property int|null $settlement_id
  * @property string $address
  * @property int $rooms_count
  * @property float $area
@@ -38,6 +38,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property-read Collection<int, ModerationLog> $moderationLogs
  * @property-read int|null $moderation_logs_count
  * @property-read User $owner
+ * @property-read Settlement|null $settlement
  * @property-read Collection<int, PropertyPhoto> $photos
  * @property-read int|null $photos_count
  * @property-read Collection<int, Review> $reviews
@@ -51,7 +52,7 @@ class Property extends Model
         'title',
         'description',
         'property_type',
-        'city',
+        'settlement_id',
         'address',
         'rooms_count',
         'area',
@@ -83,6 +84,11 @@ class Property extends Model
     public function owner(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function settlement(): BelongsTo
+    {
+        return $this->belongsTo(Settlement::class);
     }
 
     public function photos(): HasMany

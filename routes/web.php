@@ -8,10 +8,12 @@ use App\Http\Controllers\PropertyController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/properties/{property}', [PropertyController::class, 'show'])->name('property.show');
 Route::get('/register', [RegisterController::class, 'index'])->name('register');
 Route::get('/login', [LoginController::class, 'index'])->name('login');
 
 Route::middleware(['auth', 'verified'])->group(function () {
+    Route::post('/properties/{property}/book', [PropertyController::class, 'book'])->name('property.book');
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
     Route::get('/create-property', [PropertyController::class, 'create'])->name('property.create');
     Route::get('/edit-property/{property}', [PropertyController::class, 'edit'])

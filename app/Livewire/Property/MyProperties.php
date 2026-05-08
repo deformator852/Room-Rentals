@@ -16,7 +16,7 @@ class MyProperties extends Component
     {
         $properties = Auth::user()
             ->properties()
-            ->with('mainPhoto')
+            ->with(['mainPhoto', 'settlement'])
             ->latest()
             ->paginate(12);
 

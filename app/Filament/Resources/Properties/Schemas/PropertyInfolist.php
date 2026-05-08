@@ -30,8 +30,8 @@ class PropertyInfolist
                     ->formatStateUsing(fn($state) => $state?->label())
                     ->color(fn($state) => $state?->color()),
 
-                TextEntry::make('city')
-                    ->label('Місто'),
+                TextEntry::make('settlement.name')
+                    ->label('Населений пункт'),
 
                 TextEntry::make('address')
                     ->label('Адреса'),

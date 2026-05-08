@@ -28,8 +28,10 @@ class PropertyForm
                     ->options(PropertyType::class)
                     ->required(),
 
-                TextInput::make('city')
-                    ->label('Місто')
+                Select::make('settlement_id')
+                    ->label('Населений пункт')
+                    ->relationship('settlement', 'name')
+                    ->searchable()
                     ->required(),
 
                 TextInput::make('address')

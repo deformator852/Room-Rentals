@@ -4,6 +4,7 @@ namespace App\Livewire\Property;
 
 use App\Enums\PropertyStatus;
 use App\Enums\PropertyType;
+use App\Models\Settlement;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
@@ -19,7 +20,9 @@ class Create extends Component
 
     public string $property_type = 'apartment';
 
-    public string $city = '';
+    public ?int $settlement_id = null;
+
+    public string $settlementQuery = '';
 
     public string $address = '';
 
@@ -48,13 +51,18 @@ class Create extends Component
         array_splice($this->photos, $index, 1);
     }
 
+    public function updatedSettlementQuery(): void
+    {
+        $this->settlement_id = null;
+    }
+
     protected function rules(): array
     {
         return [
             'title' => ['required', 'string', 'min:5', 'max:100'],
             'description' => ['required', 'string', 'min:20', 'max:2000'],
             'property_type' => ['required', 'string'],
-            'city' => ['required', 'string', 'max:100'],
+            'settlement_id' => ['required', 'integer', 'exists:settlements,id'],
             'address' => ['required', 'string', 'max:255'],
             'rooms_count' => ['required', 'integer', 'min:1', 'max:20'],
             'area' => ['required', 'numeric', 'min:1'],
@@ -70,6 +78,7 @@ class Create extends Component
         $this->validate([
             'title' => ['required', 'string', 'min:5', 'max:100'],
             'property_type' => ['required', 'string'],
+            'settlement_id' => ['required', 'integer', 'exists:settlements,id'],
         ]);
 
         $this->storeProperty(PropertyStatus::Draft);
@@ -93,7 +102,7 @@ class Create extends Component
             'title' => $this->title,
             'description' => $this->description,
             'property_type' => PropertyType::from($this->property_type),
-            'city' => $this->city,
+            'settlement_id' => $this->settlement_id,
             'address' => $this->address,
             'rooms_count' => $this->rooms_count,
             'area' => $this->area,
@@ -116,10 +125,34 @@ class Create extends Component
     public function render()
     {
         $propertyTypes = PropertyType::options();
+        $settlementSuggestions = collect();
+
+        if (mb_strlen(trim($this->settlementQuery)) >= 2) {
+            $settlementSuggestions = Settlement::query()
+                ->where('name', 'like', '%' . trim($this->settlementQuery) . '%')
+                ->orderBy('name')
+                ->limit(8)
+                ->get();
+        }
 
         return view('livewire.property.create', [
             'propertyTypes' => $propertyTypes,
+            'settlementSuggestions' => $settlementSuggestions,
         ]);
+    }
+
+    public function selectSettlement(int $settlementId): void
+    {
+        $settlement = Settlement::query()->find($settlementId);
+
+        if (! $settlement) {
+            return;
+        }
+
+        $this->settlementQuery = $settlement->region
+            ? "{$settlement->name}, {$settlement->region}"
+            : $settlement->name;
+        $this->settlement_id = $settlement->id;
     }
 
     protected function messages(): array
@@ -135,8 +168,8 @@ class Create extends Component
 
             'property_type.required' => 'Оберіть тип нерухомості.',
 
-            'city.required' => 'Введіть місто.',
-            'city.max' => 'Назва міста не може бути довшою за 100 символів.',
+            'settlement_id.required' => 'Оберіть населений пункт зі списку.',
+            'settlement_id.exists' => 'Оберіть коректний населений пункт зі списку.',
 
             'address.required' => 'Введіть адресу.',
             'address.max' => 'Адреса не може бути довшою за 255 символів.',

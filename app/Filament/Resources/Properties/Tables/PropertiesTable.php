@@ -25,8 +25,8 @@ class PropertiesTable
                     ->formatStateUsing(fn($state) => $state?->label())
                     ->color(fn($state) => $state?->color()),
 
-                TextColumn::make('city')
-                    ->label('Місто')
+                TextColumn::make('settlement.name')
+                    ->label('Населений пункт')
                     ->searchable(),
 
                 TextColumn::make('status')

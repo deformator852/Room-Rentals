@@ -115,10 +115,26 @@
             <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
 
                 <div>
-                    <label class="mb-1.5 block text-sm font-medium text-zinc-700 dark:text-zinc-300">Місто</label>
-                    <input wire:model="city" type="text" placeholder="Київ"
-                           class="w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 placeholder-zinc-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white dark:placeholder-zinc-500"/>
-                    @error('city')
+                    <label class="mb-1.5 block text-sm font-medium text-zinc-700 dark:text-zinc-300">Населений пункт</label>
+                    <div class="relative">
+                        <input wire:model.live.debounce.300ms="settlementQuery" type="text" placeholder="Почніть вводити назву"
+                               class="w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 placeholder-zinc-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white dark:placeholder-zinc-500"/>
+
+                        @if(!$settlement_id && mb_strlen(trim($settlementQuery)) >= 2 && $settlementSuggestions->isNotEmpty())
+                            <div class="absolute z-20 mt-1 max-h-56 w-full overflow-auto rounded-lg border border-zinc-200 bg-white shadow-lg dark:border-zinc-700 dark:bg-zinc-900">
+                                @foreach($settlementSuggestions as $settlement)
+                                    <button type="button" wire:click="selectSettlement({{ $settlement->id }})"
+                                            class="block w-full px-3 py-2 text-left text-sm text-zinc-700 hover:bg-zinc-50 dark:text-zinc-200 dark:hover:bg-zinc-800">
+                                        {{ $settlement->name }}
+                                        @if($settlement->region)
+                                            <span class="text-zinc-500">, {{ $settlement->region }}</span>
+                                        @endif
+                                    </button>
+                                @endforeach
+                            </div>
+                        @endif
+                    </div>
+                    @error('settlement_id')
                     <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
                     @enderror
                 </div>
@@ -203,16 +219,16 @@
         </div>
 
         <div class="flex justify-end gap-3">
-            <button wire:click="saveDraft" wire:loading.attr="disabled" type="button"
+            <button id="save-draft-btn" wire:loading.attr="disabled" type="button"
                     class="rounded-lg border border-zinc-200 bg-white px-5 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50 disabled:opacity-60 transition-colors dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200 dark:hover:bg-zinc-700">
-                <span wire:loading.remove wire:target="saveDraft">Зберегти чернетку</span>
-                <span wire:loading wire:target="saveDraft">Збереження...</span>
+                <span wire:loading.remove wire:target="saveDraft,publish">Зберегти чернетку</span>
+                <span wire:loading wire:target="saveDraft,publish">Збереження...</span>
             </button>
 
-            <button wire:click="publish" wire:loading.attr="disabled" type="button"
+            <button id="publish-btn" wire:loading.attr="disabled" type="button"
                     class="rounded-lg bg-blue-600 px-6 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-60 transition-colors">
-                <span wire:loading.remove wire:target="publish">Опублікувати</span>
-                <span wire:loading wire:target="publish">Публікуємо...</span>
+                <span wire:loading.remove wire:target="saveDraft,publish">Опублікувати</span>
+                <span wire:loading wire:target="saveDraft,publish">Публікуємо...</span>
             </button>
         </div>
 
@@ -345,22 +361,39 @@
             });
         }
 
-        document.querySelectorAll('button[wire\\:click="publish"], button[wire\\:click="saveDraft"]').forEach(
-            btn => {
-                btn.addEventListener('click', function (e) {
-                    if (btn.hasAttribute('wire:loading')) return;
+        const publishBtn = document.getElementById('publish-btn');
+        const saveDraftBtn = document.getElementById('save-draft-btn');
 
-                    e.preventDefault();
-                    const isPublish = btn.getAttribute('wire:click') === 'publish';
+        function getComponentFromButton(button) {
+            const root = button?.closest('[wire\\:id]');
+            if (!root) return null;
 
-                    uploadAllFiles(() => {
-                        if (isPublish) {
-                            Livewire.dispatch('publish');
-                        } else {
-                            Livewire.dispatch('saveDraft');
-                        }
-                    });
-                });
+            const componentId = root.getAttribute('wire:id');
+            if (!componentId) return null;
+
+            return window.Livewire?.find(componentId) ?? null;
+        }
+
+        function handleAction(button, action) {
+            const component = getComponentFromButton(button);
+            if (!component) {
+                console.error('Livewire component not found for action:', action);
+                return;
+            }
+
+            uploadAllFiles(() => {
+                component.call(action);
             });
+        }
+
+        publishBtn?.addEventListener('click', (e) => {
+            e.preventDefault();
+            handleAction(publishBtn, 'publish');
+        });
+
+        saveDraftBtn?.addEventListener('click', (e) => {
+            e.preventDefault();
+            handleAction(saveDraftBtn, 'saveDraft');
+        });
     });
 </script>
