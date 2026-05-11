@@ -18,6 +18,7 @@
 </head>
 
 <body class="min-h-screen bg-white dark:bg-zinc-800">
+<div id="app-notifications" class="pointer-events-none fixed right-4 top-4 z-50 flex w-full max-w-sm flex-col gap-2"></div>
 
 <header class="border-b border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -29,6 +30,7 @@
 
             <div class="flex items-center gap-3">
                 @auth
+                    @php($unreadNotificationsCount = auth()->user()->notifications()->unread()->count())
                     <a href="{{ route('property.create') }}"
                        class="flex items-center gap-1.5 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 transition-colors">
                         <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.5"
@@ -38,15 +40,29 @@
                         </svg>
                         Додати оголошення
                     </a>
-                    <button
-                        class="relative rounded-lg p-2 text-zinc-500 hover:bg-zinc-100 hover:text-zinc-700 dark:hover:bg-zinc-800 dark:hover:text-zinc-300 transition-colors">
-                        <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
-                            <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
-                        </svg>
-                        <span
-                            class="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-red-500 ring-2 ring-zinc-50 dark:ring-zinc-900"></span>
-                    </button>
+                    <div class="relative">
+                        <button id="notifications-toggle"
+                                class="relative rounded-lg p-2 text-zinc-500 hover:bg-zinc-100 hover:text-zinc-700 dark:hover:bg-zinc-800 dark:hover:text-zinc-300 transition-colors">
+                            <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                                <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                            </svg>
+                            <span id="notifications-badge"
+                                  class="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-red-500 ring-2 ring-zinc-50 dark:ring-zinc-900 {{ $unreadNotificationsCount > 0 ? '' : 'hidden' }}"></span>
+                        </button>
+
+                        <div id="notifications-dropdown"
+                             class="absolute right-0 top-full z-40 mt-2 hidden w-96 rounded-xl border border-zinc-200 bg-white shadow-lg dark:border-zinc-700 dark:bg-zinc-900">
+                            <div class="flex items-center justify-between border-b border-zinc-200 px-4 py-3 dark:border-zinc-700">
+                                <p class="text-sm font-semibold text-zinc-900 dark:text-white">Сповіщення</p>
+                                <button id="notifications-clear"
+                                        class="text-xs font-medium text-red-600 hover:text-red-700">
+                                    Очистити все
+                                </button>
+                            </div>
+                            <div id="notifications-list" class="max-h-96 overflow-y-auto"></div>
+                        </div>
+                    </div>
                     <div x-data="{ open: false }" class="relative">
                         <button @click="open = !open" @click.outside="open = false"
                                 class="flex items-center gap-2 rounded-lg px-2 py-1.5 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors">
@@ -74,7 +90,7 @@
                              x-transition:leave="transition ease-in duration-75"
                              x-transition:leave-start="opacity-100 scale-100"
                              x-transition:leave-end="opacity-0 scale-95"
-                             class="absolute right-0 top-full mt-2 w-48 rounded-xl border border-zinc-200 bg-white py-1 shadow-lg dark:border-zinc-700 dark:bg-zinc-900"
+                             class="absolute right-0 top-full z-[9999] mt-2 w-48 rounded-xl border border-zinc-200 bg-white py-1 shadow-lg dark:border-zinc-700 dark:bg-zinc-900"
                              style="display: none;">
 
                             <a href="{{ route('profile.show') }}"
@@ -84,6 +100,14 @@
                             <a href="{{route('profile.my-properties')}}"
                                class="block px-4 py-2 text-sm text-zinc-700 hover:bg-zinc-50 dark:text-zinc-200 dark:hover:bg-zinc-800 transition-colors">
                                 Мої оголошення
+                            </a>
+                            <a href="{{ route('profile.my-rentals') }}"
+                               class="block px-4 py-2 text-sm text-zinc-700 hover:bg-zinc-50 dark:text-zinc-200 dark:hover:bg-zinc-800 transition-colors">
+                                Мої оренди
+                            </a>
+                            <a href="{{ route('owner.booking-requests') }}"
+                               class="block px-4 py-2 text-sm text-zinc-700 hover:bg-zinc-50 dark:text-zinc-200 dark:hover:bg-zinc-800 transition-colors">
+                                Запити на оренду
                             </a>
                             <div class="my-1 border-t border-zinc-100 dark:border-zinc-800"></div>
                             <form method="POST" action="{{ route('logout') }}">
@@ -143,6 +167,17 @@
 <main>
     @yield('main')
 </main>
+
+@auth
+    <script>
+        window.AppUser = {
+            id: @json(auth()->id()),
+            notificationsUrl: @json(route('notifications.index')),
+            readAllUrl: @json(route('notifications.read-all')),
+            clearNotificationsUrl: @json(route('notifications.clear')),
+        };
+    </script>
+@endauth
 
 @livewireScripts
 </body>

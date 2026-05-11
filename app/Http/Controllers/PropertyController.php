@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\BookingRequestedEvent;
 use App\Enums\PropertyStatus;
 use App\Models\Booking;
+use App\Models\Notification;
 use App\Models\Property;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -34,7 +36,7 @@ class PropertyController extends Controller
     public function show(string $id)
     {
         $property = Property::query()
-            ->with(['owner', 'photos', 'reviews.tenant', 'settlement'])
+            ->with(['owner', 'photos', 'reviews.tenant', 'settlement', 'bookings'])
             ->where('status', PropertyStatus::Published)
             ->findOrFail($id);
 
@@ -47,14 +49,25 @@ class PropertyController extends Controller
     {
         abort_unless($property->isPublished(), 404);
 
+        if ($property->user_id === auth()->id()) {
+            throw ValidationException::withMessages([
+                'check_in' => 'Ви не можете бронювати власне оголошення.',
+            ]);
+        }
+        $maxBookingDate = now()->addMonth()->toDateString();
+
         $validated = $request->validate([
-            'check_in' => ['required', 'date', 'after_or_equal:today'],
-            'check_out' => ['required', 'date', 'after:check_in'],
+            'check_in' => ['required', 'date', 'after_or_equal:today', 'before_or_equal:'.$maxBookingDate],
+            'check_out' => ['required', 'date', 'after:check_in', 'before_or_equal:'.$maxBookingDate],
+            'comment' => ['nullable', 'string', 'max:1000'],
         ], [
             'check_in.required' => 'Оберіть дату заїзду.',
             'check_in.after_or_equal' => 'Дата заїзду не може бути в минулому.',
+            'check_in.before_or_equal' => 'Дата заїзду має бути не пізніше ніж через 1 місяць від сьогодні.',
             'check_out.required' => 'Оберіть дату виїзду.',
             'check_out.after' => 'Дата виїзду має бути пізніше дати заїзду.',
+            'check_out.before_or_equal' => 'Дата виїзду має бути не пізніше ніж через 1 місяць від сьогодні.',
+            'comment.max' => 'Коментар не може перевищувати 1000 символів.',
         ]);
 
         $checkIn = Carbon::parse($validated['check_in'])->startOfDay();
@@ -80,7 +93,7 @@ class PropertyController extends Controller
             ]);
         }
 
-        Booking::query()->create([
+        $booking = Booking::query()->create([
             'property_id' => $property->id,
             'tenant_id' => auth()->id(),
             'check_in' => $checkIn->toDateString(),
@@ -88,7 +101,25 @@ class PropertyController extends Controller
             'nights_count' => $nights,
             'total_price' => $property->price_per_night * $nights,
             'status' => 'pending',
+            'comment' => $validated['comment'] ?? null,
         ]);
+
+        $booking->load(['tenant', 'property']);
+        Notification::query()->create([
+            'user_id' => $property->user_id,
+            'event_type' => 'booking_requested',
+            'message' => "Нова заявка на оренду: {$property->title}",
+            'metadata' => [
+                'booking_id' => $booking->id,
+                'property_id' => $property->id,
+                'check_in' => $booking->check_in->toDateString(),
+                'check_out' => $booking->check_out->toDateString(),
+                'tenant_name' => $booking->tenant->name,
+                'action_url' => route('owner.booking-requests'),
+            ],
+            'is_read' => false,
+        ]);
+        broadcast(new BookingRequestedEvent($booking));
 
         return redirect()
             ->route('property.show', $property)

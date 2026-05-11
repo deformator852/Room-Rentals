@@ -18,6 +18,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property int $nights_count
  * @property numeric $total_price
  * @property string $status
+ * @property string|null $comment
  * @property CarbonImmutable|null $created_at
  * @property CarbonImmutable|null $updated_at
  * @property-read Property $property
@@ -36,6 +37,7 @@ class Booking extends Model
         'nights_count',
         'total_price',
         'status',
+        'comment',
     ];
     protected $casts = [
         'check_in' => 'date',
