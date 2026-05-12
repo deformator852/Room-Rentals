@@ -12,6 +12,12 @@
         </div>
     </div>
 
+    @if (session('status'))
+        <div class="mb-6 rounded-lg bg-green-50 px-4 py-3 text-sm text-green-700 dark:bg-green-900/20 dark:text-green-400">
+            {{ session('status') }}
+        </div>
+    @endif
+
     @if($properties->isEmpty())
 
         <div
@@ -83,6 +89,7 @@
         'bg-green-500' => $property->status->value === 'published',
         'bg-red-500' => $property->status->value === 'rejected',
         'bg-blue-500' => $property->status->value === 'draft',
+        'bg-zinc-500' => $property->status->value === 'inactive',
     ])
 >
     {{ $property->status->label() }}
@@ -115,11 +122,29 @@
                                 </span>
                             </div>
 
-                            <a
-                                href="{{ route('property.edit', $property) }}"
-                                class="rounded-lg border border-zinc-200 px-3 py-1.5 text-sm font-medium text-zinc-700 hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-200 dark:hover:bg-zinc-800 transition-colors">
-                                Редагувати
-                            </a>
+                            <div class="flex items-center gap-2">
+                                <a
+                                    href="{{ route('property.edit', $property) }}"
+                                    class="rounded-lg border border-zinc-200 px-3 py-1.5 text-sm font-medium text-zinc-700 hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-200 dark:hover:bg-zinc-800 transition-colors">
+                                    Редагувати
+                                </a>
+
+                                @if($property->status->value === 'published')
+                                    <button
+                                        type="button"
+                                        wire:click="suspend('{{ $property->id }}')"
+                                        class="rounded-lg bg-amber-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-amber-700 transition-colors">
+                                        Призупинити
+                                    </button>
+                                @elseif($property->status->value === 'inactive')
+                                    <button
+                                        type="button"
+                                        wire:click="resume('{{ $property->id }}')"
+                                        class="rounded-lg bg-emerald-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-emerald-700 transition-colors">
+                                        Відновити
+                                    </button>
+                                @endif
+                            </div>
 
                         </div>
 

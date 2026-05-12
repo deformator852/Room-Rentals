@@ -31,6 +31,14 @@
             <div class="flex items-center gap-3">
                 @auth
                     @php($unreadNotificationsCount = auth()->user()->notifications()->unread()->count())
+                    @php($pendingBookingRequestsCount = \App\Models\Booking::query()
+                        ->whereHas('property', fn ($query) => $query->where('user_id', auth()->id()))
+                        ->where('status', 'pending')
+                        ->count())
+                    @php($pendingMyRentalsCount = \App\Models\Booking::query()
+                        ->where('tenant_id', auth()->id())
+                        ->where('status', 'pending')
+                        ->count())
                     <a href="{{ route('property.create') }}"
                        class="flex items-center gap-1.5 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 transition-colors">
                         <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.5"
@@ -63,6 +71,14 @@
                             <div id="notifications-list" class="max-h-96 overflow-y-auto"></div>
                         </div>
                     </div>
+                    <a href="{{ route('profile.favorites') }}"
+                       class="relative rounded-lg p-2 text-zinc-500 hover:bg-zinc-100 hover:text-zinc-700 dark:hover:bg-zinc-800 dark:hover:text-zinc-300 transition-colors"
+                       title="Обране"
+                       aria-label="Обране">
+                        <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path d="M12 21s-7-4.35-7-10a4 4 0 0 1 7-2.65A4 4 0 0 1 19 11c0 5.65-7 10-7 10z"/>
+                        </svg>
+                    </a>
                     <div x-data="{ open: false }" class="relative">
                         <button @click="open = !open" @click.outside="open = false"
                                 class="flex items-center gap-2 rounded-lg px-2 py-1.5 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors">
@@ -102,12 +118,22 @@
                                 Мої оголошення
                             </a>
                             <a href="{{ route('profile.my-rentals') }}"
-                               class="block px-4 py-2 text-sm text-zinc-700 hover:bg-zinc-50 dark:text-zinc-200 dark:hover:bg-zinc-800 transition-colors">
-                                Мої оренди
+                               class="flex items-center justify-between px-4 py-2 text-sm text-zinc-700 hover:bg-zinc-50 dark:text-zinc-200 dark:hover:bg-zinc-800 transition-colors">
+                                <span>Мої оренди</span>
+                                @if($pendingMyRentalsCount > 0)
+                                    <span class="inline-flex min-w-5 items-center justify-center rounded-full bg-amber-500 px-1.5 py-0.5 text-[11px] font-semibold text-white">
+                                        {{ $pendingMyRentalsCount }}
+                                    </span>
+                                @endif
                             </a>
                             <a href="{{ route('owner.booking-requests') }}"
-                               class="block px-4 py-2 text-sm text-zinc-700 hover:bg-zinc-50 dark:text-zinc-200 dark:hover:bg-zinc-800 transition-colors">
-                                Запити на оренду
+                               class="flex items-center justify-between px-4 py-2 text-sm text-zinc-700 hover:bg-zinc-50 dark:text-zinc-200 dark:hover:bg-zinc-800 transition-colors">
+                                <span>Запити на оренду</span>
+                                @if($pendingBookingRequestsCount > 0)
+                                    <span class="inline-flex min-w-5 items-center justify-center rounded-full bg-amber-500 px-1.5 py-0.5 text-[11px] font-semibold text-white">
+                                        {{ $pendingBookingRequestsCount }}
+                                    </span>
+                                @endif
                             </a>
                             <div class="my-1 border-t border-zinc-100 dark:border-zinc-800"></div>
                             <form method="POST" action="{{ route('logout') }}">

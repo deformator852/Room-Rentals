@@ -18,6 +18,8 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property int $nights_count
  * @property numeric $total_price
  * @property string $status
+ * @property CarbonImmutable|null $cancellation_requested_by_owner_at
+ * @property CarbonImmutable|null $cancellation_requested_by_tenant_at
  * @property string|null $comment
  * @property CarbonImmutable|null $created_at
  * @property CarbonImmutable|null $updated_at
@@ -37,13 +39,25 @@ class Booking extends Model
         'nights_count',
         'total_price',
         'status',
+        'cancellation_requested_by_owner_at',
+        'cancellation_requested_by_tenant_at',
         'comment',
     ];
     protected $casts = [
         'check_in' => 'date',
         'check_out' => 'date',
         'total_price' => 'decimal:2',
+        'cancellation_requested_by_owner_at' => 'datetime',
+        'cancellation_requested_by_tenant_at' => 'datetime',
     ];
+
+    public static function syncExpiredConfirmedToCheckout(): int
+    {
+        return self::query()
+            ->where('status', 'confirmed')
+            ->whereDate('check_out', '<=', now()->toDateString())
+            ->update(['status' => 'check_out']);
+    }
 
     public function isPending(): bool
     {
@@ -57,7 +71,7 @@ class Booking extends Model
 
     public function isCompleted(): bool
     {
-        return $this->status === 'completed';
+        return $this->status === 'check_out';
     }
 
     public function isCancellable(): bool

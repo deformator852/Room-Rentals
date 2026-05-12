@@ -32,7 +32,8 @@ class BookingStatusUpdatedEvent implements ShouldBroadcastNow
         $statusLabel = match ($this->booking->status) {
             'confirmed' => 'підтверджено',
             'rejected' => 'відхилено',
-            'cancelled' => 'скасовано власником',
+            'cancelled' => 'скасовано за згодою сторін',
+            'check_out' => 'завершено',
             default => $this->booking->status,
         };
 

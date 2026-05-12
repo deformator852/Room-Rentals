@@ -3,7 +3,7 @@
 namespace App\Filament\Resources\Properties\Pages;
 
 use App\Filament\Resources\Properties\PropertyResource;
-use Filament\Actions\CreateAction;
+use Filament\Actions\Action;
 use Filament\Resources\Pages\ListRecords;
 
 class ListProperties extends ListRecords
@@ -13,7 +13,9 @@ class ListProperties extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            CreateAction::make(),
+            Action::make('moderationQueue')
+                ->label('Черга модерації')
+                ->url(fn () => PropertyResource::getUrl('moderation-queue')),
         ];
     }
 }

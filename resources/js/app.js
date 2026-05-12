@@ -175,6 +175,11 @@ if (appUser?.id && import.meta.env.VITE_REVERB_APP_KEY) {
             const type = event.status === 'confirmed' ? 'success' : 'error';
             showToast(event.message, type);
             await loadNotifications();
+        })
+        .listen('.notification.created', async (event) => {
+            const type = event.event_type === 'property_rejected' ? 'error' : 'success';
+            showToast(event.message, type);
+            await loadNotifications();
         });
 }
 

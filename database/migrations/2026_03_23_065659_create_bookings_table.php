@@ -16,7 +16,7 @@ return new class extends Migration
             $table->date('check_out');
             $table->unsignedSmallInteger('nights_count');
             $table->decimal('total_price', 10, 2);
-            $table->enum('status', ['pending', 'confirmed', 'rejected', 'cancelled', 'completed'])
+            $table->enum('status', ['pending', 'confirmed', 'rejected', 'cancelled', 'check_out'])
                 ->default('pending');
             $table->timestamps();
         });

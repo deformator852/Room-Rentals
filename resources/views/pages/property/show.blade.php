@@ -113,6 +113,36 @@
                     <div class="mt-2 text-sm text-zinc-600 dark:text-zinc-300">
                         Мінімум: {{ $property->min_nights }} ночей
                     </div>
+                    <div class="mt-3">
+                        @auth
+                            @if($isFavorite)
+                                <form method="POST" action="{{ route('favorites.destroy', $property) }}">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="flex w-full items-center justify-center gap-2 rounded-lg border border-rose-300 bg-rose-50 px-3 py-2 text-sm font-semibold text-rose-700 hover:bg-rose-100 dark:border-rose-800 dark:bg-rose-900/20 dark:text-rose-300 dark:hover:bg-rose-900/30">
+                                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M12 21s-7-4.35-7-10a4 4 0 0 1 7-2.65A4 4 0 0 1 19 11c0 5.65-7 10-7 10z"/>
+                                        </svg>
+                                        Прибрати з обраного
+                                    </button>
+                                </form>
+                            @else
+                                <form method="POST" action="{{ route('favorites.store', $property) }}">
+                                    @csrf
+                                    <button type="submit" class="flex w-full items-center justify-center gap-2 rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm font-semibold text-zinc-700 hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100 dark:hover:bg-zinc-700">
+                                        <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                            <path d="M12 21s-7-4.35-7-10a4 4 0 0 1 7-2.65A4 4 0 0 1 19 11c0 5.65-7 10-7 10z"/>
+                                        </svg>
+                                        Додати в обране
+                                    </button>
+                                </form>
+                            @endif
+                        @else
+                            <a href="{{ route('login') }}" class="block w-full rounded-lg border border-zinc-300 px-3 py-2 text-center text-sm font-medium text-zinc-700 hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-200 dark:hover:bg-zinc-800">
+                                Увійдіть, щоб додати в обране
+                            </a>
+                        @endauth
+                    </div>
                     @if($activeConfirmedBooking)
                         <div class="mt-2 rounded-lg bg-amber-100 px-3 py-2 text-xs font-medium text-amber-800">
                             Зараз об'єкт зайнятий до {{ $activeConfirmedBooking->check_out->format('d.m.Y') }}

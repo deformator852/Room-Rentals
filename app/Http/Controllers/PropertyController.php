@@ -7,6 +7,7 @@ use App\Enums\PropertyStatus;
 use App\Models\Booking;
 use App\Models\Notification;
 use App\Models\Property;
+use App\Models\Favorite;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
@@ -40,8 +41,17 @@ class PropertyController extends Controller
             ->where('status', PropertyStatus::Published)
             ->findOrFail($id);
 
+        $isFavorite = false;
+        if (auth()->check()) {
+            $isFavorite = Favorite::query()
+                ->where('user_id', auth()->id())
+                ->where('property_id', $property->id)
+                ->exists();
+        }
+
         return view('pages.property.show', [
             'property' => $property,
+            'isFavorite' => $isFavorite,
         ]);
     }
 

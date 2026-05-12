@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\ClientRentalController;
+use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\Owner\BookingRequestController;
@@ -17,6 +18,8 @@ Route::get('/login', [LoginController::class, 'index'])->name('login');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/properties/{property}/book', [PropertyController::class, 'book'])->name('property.book');
+    Route::post('/properties/{property}/favorite', [FavoriteController::class, 'store'])->name('favorites.store');
+    Route::delete('/properties/{property}/favorite', [FavoriteController::class, 'destroy'])->name('favorites.destroy');
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
     Route::post('/notifications/read-all', [NotificationController::class, 'markAllAsRead'])->name('notifications.read-all');
     Route::delete('/notifications/{notification}', [NotificationController::class, 'destroy'])->name('notifications.destroy');
@@ -30,6 +33,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->name('owner.booking-requests.cancel-confirmed');
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
     Route::get('/my-rentals', [ClientRentalController::class, 'index'])->name('profile.my-rentals');
+    Route::get('/favorites', [FavoriteController::class, 'index'])->name('profile.favorites');
+    Route::post('/my-rentals/{booking}/request-cancellation', [ClientRentalController::class, 'requestCancellation'])
+        ->name('profile.my-rentals.request-cancellation');
+    Route::post('/my-rentals/{booking}/review', [ClientRentalController::class, 'submitReview'])
+        ->name('profile.my-rentals.review');
     Route::get('/create-property', [PropertyController::class, 'create'])->name('property.create');
     Route::get('/edit-property/{property}', [PropertyController::class, 'edit'])
         ->name('property.edit');

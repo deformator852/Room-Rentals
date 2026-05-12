@@ -16,7 +16,6 @@ class AdminSeeder extends Seeder
                 'last_name' => 'User',
                 'password' => bcrypt('password'),
                 'email_verified_at' => now(),
-                'is_blocked' => false,
             ]
         );
 

@@ -10,7 +10,14 @@
         @endif
 
         <div class="mb-6">
-            <h1 class="text-2xl font-semibold text-zinc-900 dark:text-white">Запити на оренду</h1>
+            <h1 class="flex items-center gap-3 text-2xl font-semibold text-zinc-900 dark:text-white">
+                <span>Запити на оренду</span>
+                @if(($pendingBookingsCount ?? 0) > 0)
+                    <span class="inline-flex min-w-7 items-center justify-center rounded-full bg-amber-500 px-2 py-0.5 text-sm font-semibold text-white">
+                        {{ $pendingBookingsCount }}
+                    </span>
+                @endif
+            </h1>
             <p class="mt-1 text-sm text-zinc-600 dark:text-zinc-300">Обробляйте запити клієнтів по вашим об'єктам.</p>
         </div>
         <div class="space-y-4">
@@ -31,6 +38,7 @@
                             @if($booking->status === 'pending') bg-amber-100 text-amber-800
                             @elseif($booking->status === 'confirmed') bg-green-100 text-green-800
                             @elseif($booking->status === 'cancelled') bg-zinc-200 text-zinc-700
+                            @elseif($booking->status === 'check_out') bg-blue-100 text-blue-800
                             @else bg-red-100 text-red-800 @endif">
                             @if($booking->status === 'pending')
                                 Очікує
@@ -38,6 +46,8 @@
                                 Підтверджено
                             @elseif($booking->status === 'cancelled')
                                 Скасовано
+                            @elseif($booking->status === 'check_out')
+                                Завершено
                             @else
                                 Відхилено
                             @endif
@@ -74,17 +84,31 @@
                         </div>
                     @endif
 
-                    @if($booking->status === 'confirmed')
+                    @if($booking->status === 'confirmed' && $booking->check_out->startOfDay()->gt(now()->startOfDay()))
                         <div class="mt-4 flex gap-2">
                             <form method="POST"
                                   action="{{ route('owner.booking-requests.cancel-confirmed', $booking) }}">
                                 @csrf
                                 <button type="submit"
                                         class="rounded-lg cursor-pointer bg-red-700 px-4 py-2 text-sm font-medium text-white hover:bg-red-800">
-                                    Скасувати підтвердження
+                                    @if($booking->cancellation_requested_by_owner_at)
+                                        Ви підтвердили скасування
+                                    @elseif($booking->cancellation_requested_by_tenant_at)
+                                        Підтвердити скасування орендаря
+                                    @else
+                                        Запросити скасування
+                                    @endif
                                 </button>
                             </form>
                         </div>
+
+                        @if($booking->cancellation_requested_by_tenant_at && !$booking->cancellation_requested_by_owner_at)
+                            <p class="mt-2 text-xs text-zinc-600 dark:text-zinc-300">Орендар уже підтвердив
+                                скасування.</p>
+                        @elseif($booking->cancellation_requested_by_owner_at && !$booking->cancellation_requested_by_tenant_at)
+                            <p class="mt-2 text-xs text-zinc-600 dark:text-zinc-300">Очікується підтвердження
+                                орендаря.</p>
+                        @endif
                     @endif
                 </article>
             @empty

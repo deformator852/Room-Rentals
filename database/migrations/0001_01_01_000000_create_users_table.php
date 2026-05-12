@@ -16,7 +16,6 @@ return new class extends Migration
             $table->string('password');
             $table->rememberToken();
             $table->string('avatar_url')->nullable();
-            $table->boolean('is_blocked')->default(false);
             $table->timestamps();
         });
 

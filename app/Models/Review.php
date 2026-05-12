@@ -14,7 +14,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string $tenant_id
  * @property string $property_id
  * @property int $rating
- * @property string $comment
  * @property string|null $owner_reply
  * @property CarbonImmutable|null $created_at
  * @property CarbonImmutable|null $updated_at
@@ -31,7 +30,6 @@ class Review extends Model
         'tenant_id',
         'property_id',
         'rating',
-        'comment',
         'owner_reply',
     ];
 

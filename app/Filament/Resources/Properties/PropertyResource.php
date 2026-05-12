@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources\Properties;
 
-use App\Filament\Resources\Properties\Pages\CreateProperty;
 use App\Filament\Resources\Properties\Pages\EditProperty;
 use App\Filament\Resources\Properties\Pages\ListProperties;
+use App\Filament\Resources\Properties\Pages\ModerationQueue;
 use App\Filament\Resources\Properties\Pages\ViewProperty;
 use App\Filament\Resources\Properties\Schemas\PropertyForm;
 use App\Filament\Resources\Properties\Schemas\PropertyInfolist;
@@ -54,7 +54,7 @@ class PropertyResource extends Resource
     {
         return [
             'index' => ListProperties::route('/'),
-            'create' => CreateProperty::route('/create'),
+            'moderation-queue' => ModerationQueue::route('/moderation-queue'),
             'view' => ViewProperty::route('/{record}'),
             'edit' => EditProperty::route('/{record}/edit'),
         ];

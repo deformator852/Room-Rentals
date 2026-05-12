@@ -4,6 +4,7 @@ namespace App\Livewire\Property;
 
 use App\Enums\PropertyStatus;
 use App\Enums\PropertyType;
+use App\Models\Favorite;
 use App\Models\Property;
 use App\Models\Settlement;
 use Carbon\Carbon;
@@ -120,6 +121,13 @@ class Catalog extends Component
         $this->applySorting($propertiesQuery);
 
         $properties = $propertiesQuery->paginate(9);
+        $favoritePropertyIds = auth()->check()
+            ? Favorite::query()
+                ->where('user_id', auth()->id())
+                ->whereIn('property_id', $properties->pluck('id'))
+                ->pluck('property_id')
+                ->all()
+            : [];
 
         $settlementSuggestions = collect();
 
@@ -135,6 +143,7 @@ class Catalog extends Component
             'properties' => $properties,
             'propertyTypes' => PropertyType::options(),
             'settlementSuggestions' => $settlementSuggestions,
+            'favoritePropertyIds' => $favoritePropertyIds,
         ]);
     }
 

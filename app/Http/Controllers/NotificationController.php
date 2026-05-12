@@ -23,6 +23,14 @@ class NotificationController extends Controller
                     $actionUrl = route('owner.booking-requests');
                 }
 
+                if (! $actionUrl && $notification->event_type === 'booking_cancellation_requested') {
+                    $actionUrl = route('profile.my-rentals');
+                }
+
+                if (! $actionUrl && $notification->event_type === 'booking_rated') {
+                    $actionUrl = route('owner.booking-requests');
+                }
+
                 return [
                     'id' => $notification->id,
                     'event_type' => $notification->event_type,
