@@ -1,3 +1,4 @@
+
 # Room Rentals
 
 Веб додаток для оренди житла на Laravel + Livewire +  Filament.
@@ -14,7 +15,7 @@
 - Каталог житла та сторінка детального перегляду житла
 - Реєстрація, вхід і особистий кабінет користувача
 - Створення бронювання для авторизованих користувачів
-- Real-time сповіщення 
+- Real-time сповіщення
 - Кабінет орендаря з можливістю запиту на скасування та залишення відгуку
 - Кабінет власника для підтвердження/відхилення бронювань
 - Адмін панель для адміністрації проєкту
@@ -49,31 +50,95 @@
 
 - PHP `^8.3`
 - Composer
-- Node.js `18+` 
+- Node.js `18+`
 - npm
 - MySQL `8+`
 
 ## Встановлення та запуск
 
+### Запуск через Docker 
 1. Клонувати репозиторій:
 ```bash
 git clone <repo-url>
 cd Room-Rentals
 ```
 
-2. Встановити залежності:
-```bash
-composer install
-npm install
-```
-
-3. Налаштувати середовище:
+2. Підготувати `.env`:
 ```bash
 cp .env.example .env
 php artisan key:generate
 ```
 
-4. Вказати параметри БД в `.env` (за замовчуванням використовується MySQL, БД запускається через Docker):
+3. Перевірити/вказати змінні в `.env` для Docker:
+```env
+APP_URL=http://localhost
+APP_PORT=80
+
+DB_CONNECTION=mysql
+DB_HOST=mysql
+DB_PORT=3306
+DB_DATABASE=room-rentals
+DB_USERNAME=room-rentals
+DB_PASSWORD=room-rentals
+
+FORWARD_DB_PORT=3306
+
+BROADCAST_CONNECTION=reverb
+REVERB_APP_ID=room-rentals
+REVERB_APP_KEY=room-rentals-key
+REVERB_APP_SECRET=room-rentals-secret
+REVERB_HOST=localhost
+REVERB_PORT=8080
+REVERB_SCHEME=http
+
+VITE_REVERB_APP_KEY="${REVERB_APP_KEY}"
+VITE_REVERB_HOST="${REVERB_HOST}"
+VITE_REVERB_PORT="${REVERB_PORT}"
+VITE_REVERB_SCHEME="${REVERB_SCHEME}"
+
+MAIL_MAILER=smtp
+MAIL_SCHEME=null
+MAIL_HOST=mailpit
+MAIL_PORT=1025
+MAIL_USERNAME=null
+MAIL_PASSWORD=null
+MAIL_FROM_ADDRESS=no-reply@room-rentals.local
+MAIL_FROM_NAME="${APP_NAME}"
+
+FORWARD_MAILPIT_PORT=1025
+FORWARD_MAILPIT_DASHBOARD_PORT=8025
+```
+
+4. Запустити контейнери:
+```bash
+docker compose up -d
+```
+
+5. Виконати міграції і сидер:
+```bash
+docker compose exec room-rentals-app php artisan migrate
+docker compose exec room-rentals-app php artisan db:seed --force
+```
+
+6. Доступні сервіси:
+- Застосунок: `http://localhost`
+- Mailpit UI(для підвтерждення почти): `http://localhost:8025`
+
+### Локальний запуск (без Docker)
+
+1. Встановити залежності:
+```bash
+composer install
+npm install
+```
+
+2. Підготувати `.env`:
+```bash
+cp .env.example .env
+php artisan key:generate
+```
+
+3. Вказати змінні БД у `.env` (для локального MySQL):
 ```env
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
@@ -83,48 +148,21 @@ DB_USERNAME=room-rentals
 DB_PASSWORD=room-rentals
 ```
 
-5. Запустити міграції:
+4. Запустити міграції:
 ```bash
 php artisan migrate
 ```
 
-6. Запустити проєкт у dev-режимі:
+5. Запустити проєкт у dev-режимі:
 ```bash
 php artisan reverb:start
 php artisan queue:work
 composer dev
 ```
 
-Після запуску застосунок буде доступний за адресою `http://localhost:8000` 
+Після запуску застосунок буде доступний за адресою `http://localhost:8000`.
 
-## Запуск через Docker (Laravel Sail)
-
-1. Встановити залежності та підготувати `.env`:
-```bash
-composer install
-cp .env.example .env
-php artisan key:generate
-```
-
-2. Запустити контейнери:
-```bash
-./vendor/bin/sail up -d
-```
-
-3. Виконати міграції:
-```bash
-./vendor/bin/sail artisan migrate
-```
-
-4. Запустити фронтенд:
-```bash
-./vendor/bin/sail npm install
-./vendor/bin/sail npm run dev
-```
-
-Після запуску застосунок буде доступний за адресою `http://localhost`.
-
-## Збирання 
+## Збирання
 
 ```bash
 npm run build
@@ -138,3 +176,4 @@ php artisan view:cache
 ## Ліцензія
 
 Проєкт розповсюджується за ліцензією [MIT](LICENSE).
+
