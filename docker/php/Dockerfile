@@ -1,6 +1,8 @@
 FROM laravelsail/php84-composer:latest
 
-RUN docker-php-ext-install pdo_mysql
+
+RUN apt-get update && apt-get install -y libicu-dev \
+    && docker-php-ext-install pdo_mysql intl
 
 WORKDIR /var/www/html
 
